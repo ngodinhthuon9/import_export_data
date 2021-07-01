@@ -11,6 +11,13 @@
   + mix ecto.create
   + mix ecto.mirgrate
 
+- To reset & make change database:
+  + mix ecto.drop
+  + mix ecto.create
+  + mix ecto.mirgrate
+
+- To show status of migrations: mix ecto.migrations
+
 - To run test: mix test
 
 - To run: iex -S mix

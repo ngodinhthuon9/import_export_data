@@ -5,13 +5,13 @@ defmodule Ex1.Product do
 
   schema "products" do
     field :sku, :string, null: false
-    field :name, :string
+    field :name, :string, null: false
     field :provider, :string
     field :brand, :string
-    field :original_price, :integer
-    field :price, :integer
+    field :original_price, :integer, null: false
+    field :price, :integer, null: false
     field :num, :integer
-    field :status, :integer, default: 1
+    field :status, :string, null: false
   end
 
   def changeset(struct, params) do

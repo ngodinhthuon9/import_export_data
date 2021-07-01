@@ -41,7 +41,18 @@ defmodule Ex1 do
     {:rows, num_rows} = Enum.at(info, 0)
     Enum.each(1..num_rows, fn(row_idx) ->
       {sku, name, provider, brand, original_price, price, num, status} = extract_all_fields_of_row(table_id, row_idx)
-      Ex1.Product.add_new_product(%{sku: sku, name: name, provider: provider, brand: brand, original_price: original_price, price: price, num: num, status: status})
+      # Ex1.Product.add_new_product(%{sku: sku, name: name, provider: provider, brand: brand, original_price: original_price, price: price, num: num, status: status})
+      cond do
+        sku == nil -> raise {:error, "sku is nil at row " <> Integer.to_string(row_idx)}
+        name == nil -> raise {:error, "name is nil at row " <> Integer.to_string(row_idx)}
+        original_price == nil -> raise {:error, "original_price is nil at row " <> Integer.to_string(row_idx)}
+        price == nil -> raise {:error, "price is nil at row " <> Integer.to_string(row_idx)}
+        status == nil -> raise {:error, "status is nil at row " <> Integer.to_string(row_idx)}
+        original_price < 0 -> raise {:error, "original_price is negative at row " <> Integer.to_string(row_idx)}
+        price < 0 -> raise {:error, "price is negative at row " <> Integer.to_string(row_idx)}
+        num < 0 -> raise {:error, "num is negative at row " <> Integer.to_string(row_idx)}
+        true -> Ex1.Product.add_new_product(%{sku: sku, name: name, provider: provider, brand: brand, original_price: original_price, price: price, num: num, status: status})
+      end
     end)
   end
 
@@ -67,8 +78,7 @@ defmodule Ex1 do
     original_price = Enum.at(row, 5)
     price = Enum.at(row, 6)
     num = Enum.at(row, 8)
-    status_str = Enum.at(row, 9)
-    status = if (status_str == "Còn hàng"), do: 2, else: if (status_str == "Sắp hết") , do: 1, else: 0
+    status = Enum.at(row, 9)
     {sku, name, provider, brand, original_price, price, num, status}
   end
 
@@ -94,9 +104,8 @@ defmodule Ex1 do
       length(all_product) > 0 -> {:ok,
         Enum.each(0..length(all_product)-1, fn(row_idx) ->
           %{sku: sku, name: name, provider: provider, brand: brand, original_price: original_price, price: price, num: num, status: status} = Enum.at(all_product, row_idx)
-          status_str = if (status == 2), do: "Còn hàng", else: if (status == 1), do: "Sắp hết", else: "Hết hàng"
           data = sku <> "," <> name <> "," <> provider <> "," <> brand <> "," <> Integer.to_string(original_price) <> "," <> Integer.to_string(price)
-          <> "," <> Integer.to_string(num) <> "," <> status_str <> "\n"
+          <> "," <> Integer.to_string(num) <> "," <> status <> "\n"
           IO.binwrite(filewriter, data)
         end)
       }

@@ -27,7 +27,6 @@ defmodule Ex1.MixProject do
       {:ecto_sql, "~> 3.2"},
       {:postgrex, "~> 0.15"},
       {:xlsxir, "~> 1.6.4"},
-      {:nimble_csv, "~> 1.1"}
     ]
   end
 end

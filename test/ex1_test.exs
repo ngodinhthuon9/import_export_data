@@ -107,4 +107,9 @@ defmodule Ex1Test do
     assert Ex1.export_product_database_to_csv() == {:error, "No data"}
   end
 
+  test "test import valid" do
+    assert Ex1.import_product_excel_to_database()==:ok
+    Ex1.Product.remove_all_product()
+  end
+
 end
