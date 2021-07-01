@@ -17,12 +17,26 @@ defmodule Ex1.Product do
   def changeset(struct, params) do
     struct
     |> cast(params, [:sku, :name, :provider, :brand, :original_price, :price, :num, :status])
+    |> validate_required([:sku])
+    |> validate_required([:name])
+    |> validate_required([:original_price])
+    |> validate_required([:price])
+    |> validate_required([:status])
+    |> validate_number(:original_price, greater_than_or_equal_to: 0)
+    |> validate_number(:price, greater_than_or_equal_to: 0)
+    |> validate_number(:num, greater_than_or_equal_to: 0)
+
   end
 
-  def add_new_product(params) do
-    %Ex1.Product {}
-    |> Ex1.Product.changeset(params)
-    |> Ex1.Repo.insert()
+  def add_new_product(params, row_idx) do
+    changeset = Ex1.Product.changeset(%Ex1.Product {}, params)
+    cond do
+      changeset.valid? -> Ex1.Repo.insert(changeset)
+      true -> (
+        IO.puts "At row " <> Integer.to_string(row_idx)
+        IO.puts changeset.errors
+      )
+    end
   end
 
   def query_all_product do

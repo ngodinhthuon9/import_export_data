@@ -39,20 +39,9 @@ defmodule Ex1 do
     {:ok, table_id} = Xlsxir.multi_extract(@input_excel_file_name, 0)
     info = Xlsxir.get_info(table_id)
     {:rows, num_rows} = Enum.at(info, 0)
-    Enum.each(1..num_rows, fn(row_idx) ->
+    Enum.each(2..num_rows, fn(row_idx) ->
       {sku, name, provider, brand, original_price, price, num, status} = extract_all_fields_of_row(table_id, row_idx)
-      # Ex1.Product.add_new_product(%{sku: sku, name: name, provider: provider, brand: brand, original_price: original_price, price: price, num: num, status: status})
-      cond do
-        sku == nil -> raise {:error, "sku is nil at row " <> Integer.to_string(row_idx)}
-        name == nil -> raise {:error, "name is nil at row " <> Integer.to_string(row_idx)}
-        original_price == nil -> raise {:error, "original_price is nil at row " <> Integer.to_string(row_idx)}
-        price == nil -> raise {:error, "price is nil at row " <> Integer.to_string(row_idx)}
-        status == nil -> raise {:error, "status is nil at row " <> Integer.to_string(row_idx)}
-        original_price < 0 -> raise {:error, "original_price is negative at row " <> Integer.to_string(row_idx)}
-        price < 0 -> raise {:error, "price is negative at row " <> Integer.to_string(row_idx)}
-        num < 0 -> raise {:error, "num is negative at row " <> Integer.to_string(row_idx)}
-        true -> Ex1.Product.add_new_product(%{sku: sku, name: name, provider: provider, brand: brand, original_price: original_price, price: price, num: num, status: status})
-      end
+      Ex1.Product.add_new_product(%{sku: sku, name: name, provider: provider, brand: brand, original_price: original_price, price: price, num: num, status: status}, row_idx)
     end)
   end
 
